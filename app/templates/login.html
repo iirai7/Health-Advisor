@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Login{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap anim-fade-up">
+
+    <!-- Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <button class="toggle-btn" onclick="toggleLanguage()">
+            <span id="lang-label">AR</span>
+        </button>
+        <button class="toggle-btn" onclick="toggleTheme()">
+            <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card auth-card anim-card-in">
+
+        <!-- Back -->
+        <a href="/" class="back-link">
+            <i class="fa-solid fa-arrow-left arrow"></i>
+            <span data-i18n="common.back">Back</span>
+        </a>
+
+        <!-- Logo -->
+        <div class="logo-small">
+            <div class="logo-icon">
+                <i class="fa-solid fa-stethoscope text-white" style="font-size:18px"></i>
+            </div>
+            <span class="logo-text" data-i18n="app.name">Health Advisor</span>
+        </div>
+
+
+        <!-- Title -->
+        <h1 class="card-title" data-i18n="auth.login_title">Login</h1>
+        <p class="card-subtitle" data-i18n="auth.welcome_subtitle">Your personal AI-powered medical assistant</p>
+
+        <!-- Error -->
+        <div id="error-msg" class="msg-error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" novalidate>
+
+            <!-- Email -->
+            <div class="field-group">
+                <label class="field-label" for="email" data-i18n="auth.email">Email</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input id="email" type="email" name="email" class="field-input"
+                        data-i18n-placeholder="auth.email_placeholder" placeholder="example@mail.com"
+                        autocomplete="email" required />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="field-group">
+                <label class="field-label" for="password" data-i18n="auth.password">Password</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input id="password" type="password" name="password" class="field-input has-toggle"
+                        data-i18n-placeholder="auth.password_placeholder" placeholder="Enter your password"
+                        autocomplete="current-password" required />
+                    <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Toggle password visibility">
+                        <i class="fa-solid fa-eye" id="pw-icon"></i>
+                    </button>
+                </div>
+                <a href="/forgot-password" class="forgot-link" data-i18n="auth.forgot_password">Forgot Password?</a>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-primary" id="login-btn">
+                <span class="btn-text" data-i18n="auth.login_btn">Login to System</span>
+                <div class="btn-spinner"></div>
+            </button>
+
+        </form>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <span data-i18n="auth.no_account">Don't have an account?</span>
+            <a href="/register" data-i18n="auth.register_link"> Create New Account</a>
+        </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <p class="page-copyright" data-i18n="auth.copyright">© 2026 Smart Preliminary Diagnosis System</p>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        // ── Sync toggles ──
+        const lang = localStorage.getItem('lang') || 'en';
+        const theme = localStorage.getItem('theme') || 'light';
+        const langLabel = document.getElementById('lang-label');
+        const themeIcon = document.getElementById('theme-icon');
+        if (langLabel) langLabel.textContent = lang === 'ar' ? 'EN' : 'AR';
+        if (themeIcon) {
+            themeIcon.classList.toggle('fa-moon', theme !== 'dark');
+            themeIcon.classList.toggle('fa-sun', theme === 'dark');
+        }
+
+        // ── Redirect if already logged in ──
+        if (localStorage.getItem('token')) {
+            window.location.href = '/dashboard';
+            return;
+        }
+
+        // ── Password toggle ──
+        const pwToggle = document.getElementById('pw-toggle');
+        const pwInput = document.getElementById('password');
+        const pwIcon = document.getElementById('pw-icon');
+        pwToggle.addEventListener('click', () => {
+            const show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            pwIcon.classList.toggle('fa-eye', !show);
+            pwIcon.classList.toggle('fa-eye-slash', show);
+        });
+
+        // ── Show error ──
+        function showError(msg) {
+            const box = document.getElementById('error-msg');
+            const text = document.getElementById('error-text');
+            text.textContent = msg;
+            box.classList.add('show');
+            // re-trigger shake animation
+            box.style.animation = 'none';
+            box.offsetHeight;
+            box.style.animation = '';
+        }
+
+        function hideError() {
+            document.getElementById('error-msg').classList.remove('show');
+        }
+
+        // ── Set loading state ──
+        function setLoading(state) {
+            const btn = document.getElementById('login-btn');
+            btn.disabled = state;
+            btn.classList.toggle('btn-loading', state);
+        }
+
+        // ── Form submit ──
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Basic validation
+            if (!email || !email.includes('@')) {
+                showError(t('auth.email_error'));
+                return;
+            }
+            if (!password) {
+                showError(t('common.required'));
+                return;
+            }
+
+            setLoading(true);
+            const result = await Auth.login(email, password);
+            setLoading(false);
+
+            if (!result.success) {
+                showError(result.message || t('common.error'));
+            }
+            // On success Auth.login redirects automatically
+        });
+
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Verify Email{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+
+    <!-- Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <button class="toggle-btn" onclick="toggleLanguage()">
+            <span id="lang-label">AR</span>
+        </button>
+        <button class="toggle-btn" onclick="toggleTheme()">
+            <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card auth-card anim-card-in" style="text-align:center">
+
+        <!-- Logo ring (large, centered) -->
+        <div style="display:flex;justify-content:center;margin-bottom:20px" class="anim-logo-in">
+            <div class="logo-ring">
+                <i class="fa-solid fa-envelope-open-text text-white" style="font-size:30px"></i>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="card-title anim-fade-up delay-2" data-i18n="otp.title">Verify Your Email</h1>
+        <p class="card-subtitle anim-fade-up delay-3" id="otp-subtitle" data-i18n="otp.subtitle">
+            We sent a 6-digit code to your email
+        </p>
+
+        <!-- Email display -->
+        <div class="anim-fade-up delay-3" style="margin-bottom:24px">
+            <span id="email-display" style="
+          display:inline-block;
+          padding:6px 16px;
+          border-radius:100px;
+          font-size:13px;
+          font-weight:600;
+          color:var(--color-primary);
+          background:rgba(127,94,152,0.08);
+          border:1px solid var(--color-border);
+        "></span>
+        </div>
+
+        <!-- Error -->
+        <div id="error-msg" class="msg-error" style="text-align:start">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <!-- Success -->
+        <div id="success-msg" class="msg-success" style="text-align:start">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="success-text"></span>
+        </div>
+
+        <!-- OTP inputs (6 boxes) -->
+        <div id="otp-inputs" class="anim-fade-up delay-3" style="
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin-bottom:28px;
+      direction:ltr;
+    ">
+            {% for i in range(6) %}
+            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-box" style="
+          width:48px; height:56px;
+          border-radius:12px;
+          border:1.5px solid var(--color-border);
+          background:rgba(247,246,247,0.8);
+          color:var(--color-heading);
+          font-size:22px; font-weight:700;
+          text-align:center;
+          outline:none;
+          transition:border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+          font-family:'Tajawal',sans-serif;
+        " />
+            {% endfor %}
+        </div>
+
+        <!-- Verify Button -->
+        <button type="button" class="btn-primary anim-fade-up delay-4" id="verify-btn" onclick="handleVerify()">
+            <span class="btn-text" data-i18n="otp.verify_btn">Verify Account</span>
+            <div class="btn-spinner"></div>
+        </button>
+
+        <!-- Resend -->
+        <div class="anim-fade-up delay-5" style="margin-top:20px;font-size:13px;color:var(--color-muted)">
+            <span data-i18n="otp.resend_wait">Resend in</span>
+            <span id="resend-timer" style="color:var(--color-primary);font-weight:700"> 60</span>
+            <span data-i18n="otp.seconds">sec</span>
+
+            <button id="resend-btn" type="button" onclick="handleResend()" style="
+          display:none;
+          background:none;border:none;cursor:pointer;
+          color:var(--color-primary);font-weight:600;
+          font-size:13px;font-family:'Tajawal',sans-serif;
+          text-decoration:underline;
+        " data-i18n="otp.resend">Resend Code</span>
+            </button>
+        </div>
+
+        <!-- Back to register -->
+        <div style="margin-top:16px" class="anim-fade-up delay-6">
+            <a href="/register" class="back-link" style="justify-content:center">
+                <i class="fa-solid fa-arrow-left rtl-flip"></i>
+                <span data-i18n="common.back">Back</span>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <p class="page-copyright anim-fade-up delay-7" data-i18n="auth.copyright">
+        © 2026 Health Advisor
+    </p>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        // ── Sync toggles ──
+        const lang = localStorage.getItem('lang') || 'en';
+        const theme = localStorage.getItem('theme') || 'light';
+        const langLabel = document.getElementById('lang-label');
+        const themeIcon = document.getElementById('theme-icon');
+        if (langLabel) langLabel.textContent = lang === 'ar' ? 'EN' : 'AR';
+        if (themeIcon) {
+            themeIcon.classList.toggle('fa-moon', theme !== 'dark');
+            themeIcon.classList.toggle('fa-sun', theme === 'dark');
+        }
+
+        // ── Get email from URL ──
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get('email') || '';
+
+        if (!email) {
+            window.location.href = '/register';
+            return;
+        }
+
+        document.getElementById('email-display').textContent = email;
+
+        // ── OTP box logic ──
+        const boxes = document.querySelectorAll('.otp-box');
+
+        boxes.forEach((box, idx) => {
+            // Focus style
+            box.addEventListener('focus', () => {
+                box.style.borderColor = 'var(--color-primary)';
+                box.style.boxShadow = '0 0 0 3px rgba(127,94,152,0.12)';
+                box.style.background = 'white';
+                box.select();
+            });
+            box.addEventListener('blur', () => {
+                box.style.borderColor = box.value ? 'var(--color-primary)' : 'var(--color-border)';
+                box.style.boxShadow = 'none';
+                box.style.background = '';
+            });
+
+            // Input: auto-advance
+            box.addEventListener('input', () => {
+                const val = box.value.replace(/\D/g, '');
+                box.value = val.slice(0, 1);
+                if (val && idx < boxes.length - 1) {
+                    boxes[idx + 1].focus();
+                }
+                // Auto-verify when all filled
+                const code = getCode();
+                if (code.length === 6) handleVerify();
+            });
+
+            // Backspace: go back
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !box.value && idx > 0) {
+                    boxes[idx - 1].focus();
+                }
+            });
+
+            // Paste: distribute digits
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData)
+                    .getData('text').replace(/\D/g, '').slice(0, 6);
+                pasted.split('').forEach((ch, i) => {
+                    if (boxes[i]) boxes[i].value = ch;
+                });
+                const last = Math.min(pasted.length, boxes.length - 1);
+                boxes[last].focus();
+                if (pasted.length === 6) handleVerify();
+            });
+        });
+
+        // Focus first box on load
+        setTimeout(() => boxes[0] && boxes[0].focus(), 400);
+
+        // ── Get full code ──
+        function getCode() {
+            return Array.from(boxes).map(b => b.value).join('');
+        }
+
+        // ── Message helpers ──
+        function showError(msg) {
+            const box = document.getElementById('error-msg');
+            const text = document.getElementById('error-text');
+            document.getElementById('success-msg').classList.remove('show');
+            text.textContent = msg;
+            box.classList.add('show');
+        }
+
+        function showSuccess(msg) {
+            const box = document.getElementById('success-msg');
+            const text = document.getElementById('success-text');
+            document.getElementById('error-msg').classList.remove('show');
+            text.textContent = msg;
+            box.classList.add('show');
+        }
+
+        function hideMessages() {
+            document.getElementById('error-msg').classList.remove('show');
+            document.getElementById('success-msg').classList.remove('show');
+        }
+
+        // ── Loading state ──
+        function setLoading(state) {
+            const btn = document.getElementById('verify-btn');
+            btn.disabled = state;
+            btn.classList.toggle('btn-loading', state);
+            boxes.forEach(b => b.disabled = state);
+        }
+
+        // ── Verify ──
+        window.handleVerify = async function () {
+            hideMessages();
+            const code = getCode();
+
+            if (code.length < 6) {
+                showError(t('common.required'));
+                return;
+            }
+
+            setLoading(true);
+            const result = await Auth.verifyOtp(email, code);
+            setLoading(false);
+
+            if (!result.success) {
+                showError(result.message || t('common.error'));
+                // Clear boxes on wrong code
+                boxes.forEach(b => { b.value = ''; b.style.borderColor = 'var(--color-border)'; });
+                boxes[0].focus();
+            }
+            // On success Auth.verifyOtp redirects to /dashboard
+        };
+
+        // ── Resend countdown ──
+        let countdown = 60;
+        const timerEl = document.getElementById('resend-timer');
+        const resendBtn = document.getElementById('resend-btn');
+        const timerWrap = timerEl.parentElement;
+
+        const interval = setInterval(() => {
+            countdown--;
+            timerEl.textContent = ` ${countdown}`;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                timerEl.style.display = 'none';
+                timerEl.previousSibling && (timerEl.previousSibling.style.display = 'none');
+                // Hide the "Resend in X sec" text, show button
+                timerWrap.childNodes.forEach(n => {
+                    if (n.nodeType === Node.TEXT_NODE || n.tagName === 'SPAN') n.style && (n.style.display = 'none');
+                });
+                resendBtn.style.display = 'inline';
+            }
+        }, 1000);
+
+        // ── Resend ──
+        window.handleResend = async function () {
+            hideMessages();
+            resendBtn.disabled = true;
+
+            const result = await Auth.resendOtp(email);
+
+            if (result.success) {
+                showSuccess(t('otp.resend') + ' ✓');
+                // Reset boxes
+                boxes.forEach(b => { b.value = ''; b.style.borderColor = 'var(--color-border)'; });
+                boxes[0].focus();
+                // Hide resend button again briefly
+                setTimeout(() => { resendBtn.disabled = false; }, 30000);
+            } else {
+                showError(result.message || t('common.error'));
+                resendBtn.disabled = false;
+            }
+        };
+
+    })();
+</script>
+
+<style>
+    /* Dark mode OTP box overrides — minimal, only what style.css can't cover */
+    html.dark .otp-box {
+        background: rgba(255, 255, 255, 0.07) !important;
+        color: #fff !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    html.dark .otp-box:focus {
+        background: rgba(255, 255, 255, 0.12) !important;
+    }
+</style>
+{% endblock %}

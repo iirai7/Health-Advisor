@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Profile{% endblock %}
+
+{% block head %}
+<style>
+    .profile-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 16px 24px;
+    }
+
+    /* ── Page header ── */
+    .page-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--color-heading);
+        letter-spacing: -0.4px;
+        margin-bottom: 24px;
+    }
+
+    /* ── Avatar section ── */
+    .avatar-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 32px 20px 28px;
+        border-radius: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .big-avatar {
+        width: 88px;
+        height: 88px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(127, 94, 152, 0.35);
+        animation: logoIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .profile-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--color-heading);
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+    }
+
+    .profile-email {
+        font-size: 13px;
+        color: var(--color-muted);
+    }
+
+    /* ── Info section ── */
+    .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 0 4px;
+        margin-bottom: 8px;
+        margin-top: 20px;
+    }
+
+    .info-group {
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-bottom: none;
+        transition: background var(--transition-theme);
+    }
+
+    .info-item:first-child {
+        border-radius: 18px 18px 0 0;
+    }
+
+    .info-item:last-child {
+        border-radius: 0 0 18px 18px;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .info-item:only-child {
+        border-radius: 18px;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        background: rgba(127, 94, 152, 0.1);
+        color: var(--color-primary);
+    }
+
+    .info-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-muted);
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-heading);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .info-value.empty {
+        color: var(--color-muted);
+        font-weight: 400;
+        font-style: italic;
+    }
+
+    /* ── Account type badge ── */
+    .account-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(127, 94, 152, 0.1);
+        color: var(--color-primary);
+        border: 1px solid rgba(127, 94, 152, 0.2);
+        margin-top: 10px;
+    }
+
+    /* ── Skeleton ── */
+    .skeleton-avatar {
+        width: 88px;
+        height: 88px;
+        border-radius: 28px;
+        margin: 0 auto 16px;
+    }
+
+    .skeleton-text-lg {
+        height: 22px;
+        width: 160px;
+        border-radius: 6px;
+        margin: 0 auto 8px;
+    }
+
+    .skeleton-text-sm {
+        height: 14px;
+        width: 120px;
+        border-radius: 4px;
+        margin: 0 auto;
+    }
+
+    .skeleton-item {
+        height: 64px;
+        border-radius: 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .skeleton-item:first-child {
+        border-radius: 18px 18px 0 0;
+    }
+
+    .skeleton-item:last-child {
+        border-radius: 0 0 18px 18px;
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-wrap">
+
+    <!-- Header -->
+    <h1 class="page-title anim-fade-up delay-1" data-i18n="profile.title">Profile</h1>
+
+    <!-- Avatar skeleton -->
+    <div id="avatar-skeleton" class="glass-card avatar-section anim-fade-up delay-2">
+        <div class="skeleton skeleton-avatar"></div>
+        <div class="skeleton skeleton-text-lg"></div>
+        <div class="skeleton skeleton-text-sm" style="margin-top:8px"></div>
+    </div>
+
+    <!-- Avatar section -->
+    <div id="avatar-section" class="glass-card avatar-section anim-fade-up delay-2" style="display:none">
+        <div class="big-avatar" id="big-avatar">?</div>
+        <div class="profile-name" id="display-name">—</div>
+        <div class="profile-email" id="display-email">—</div>
+        <div class="account-badge" id="account-badge">
+            <i class="fa-solid fa-user"></i>
+            <span id="account-type">Primary Account</span>
+        </div>
+    </div>
+
+    <!-- Info skeleton -->
+    <div id="info-skeleton" class="anim-fade-up delay-3">
+        <div style="height:14px;width:100px;border-radius:4px;margin-bottom:8px" class="skeleton"></div>
+        <div class="info-group">
+            <div class="skeleton skeleton-item"></div>
+            <div class="skeleton skeleton-item"></div>
+            <div class="skeleton skeleton-item"></div>
+        </div>
+    </div>
+
+    <!-- Info section -->
+    <div id="info-section" style="display:none" class="anim-fade-up delay-3">
+        <p class="section-label" data-i18n="settings.profile_section">Profile</p>
+        <div class="info-group">
+
+            <!-- Name -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-user"></i></div>
+                <div class="info-text">
+                    <div class="info-label" data-i18n="profile.name">Full Name</div>
+                    <div class="info-value" id="info-name">—</div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="info-text">
+                    <div class="info-label" data-i18n="profile.email">Email</div>
+                    <div class="info-value" id="info-email">—</div>
+                </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="info-text">
+                    <div class="info-label" data-i18n="profile.phone">Phone Number</div>
+                    <div class="info-value" id="info-phone">—</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Family section (only shown for child accounts) -->
+        <div id="family-section" style="display:none">
+            <p class="section-label" data-i18n="dashboard.family_section">Family</p>
+            <div class="info-group">
+                <div class="info-item">
+                    <div class="info-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="info-text">
+                        <div class="info-label" data-i18n="family.relation">Relationship</div>
+                        <div class="info-value" id="info-relation">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        const session = Auth.requireAuth();
+        if (!session) return;
+
+        const { user_name } = session;
+
+        async function loadProfile() {
+            const result = await API.get('/api/users/profile');
+
+            // Hide skeletons
+            document.getElementById('avatar-skeleton').style.display = 'none';
+            document.getElementById('info-skeleton').style.display = 'none';
+
+            // Show real content
+            document.getElementById('avatar-section').style.display = 'flex';
+            document.getElementById('info-section').style.display = 'block';
+
+            if (!result.success || !result.data) {
+                // Fallback to session data
+                const name = user_name || '';
+                document.getElementById('big-avatar').textContent = name ? name[0].toUpperCase() : '?';
+                document.getElementById('display-name').textContent = name;
+                document.getElementById('info-name').textContent = name;
+                return;
+            }
+
+            const data = result.data;
+            const name = data.name || user_name || '';
+            const email = data.email || '';
+            const phone = data.phone_number || '';
+            const isChild = !!data.parent_user_id;
+
+            // Avatar
+            document.getElementById('big-avatar').textContent = name ? name[0].toUpperCase() : '?';
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-email').textContent = email;
+
+            // Account type badge
+            const badge = document.getElementById('account-type');
+            if (isChild) {
+                badge.textContent = t('family.relation') || 'Family Member';
+                document.getElementById('family-section').style.display = 'block';
+                document.getElementById('info-relation').textContent = data.relation || '—';
+            } else {
+                badge.textContent = 'Primary Account';
+            }
+
+            // Info fields
+            document.getElementById('info-name').textContent = name || '—';
+            document.getElementById('info-email').textContent = email || '—';
+
+            const phoneEl = document.getElementById('info-phone');
+            if (phone) {
+                phoneEl.textContent = phone;
+            } else {
+                phoneEl.textContent = 'Not provided';
+                phoneEl.classList.add('empty');
+            }
+        }
+
+        loadProfile();
+    })();
+</script>
+{% endblock %}

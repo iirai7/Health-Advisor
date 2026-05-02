@@ -1,0 +1,725 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Family{% endblock %}
+
+{% block head %}
+<style>
+    .family-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 16px 24px;
+    }
+
+    /* ── Nav Hover Fix ── */
+    body {
+        padding-bottom: 0 !important;
+    }
+
+    #bottom-nav {
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+
+    #bottom-nav.nav-visible {
+        transform: translateY(0);
+    }
+
+    .nav-trigger {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        z-index: 49;
+        cursor: pointer;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .page-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--color-heading);
+        letter-spacing: -0.4px;
+    }
+
+    /* ── Add button ── */
+    .btn-add {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        border: none;
+        cursor: pointer;
+        box-shadow: var(--shadow-btn);
+        font-family: 'Tajawal', sans-serif;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-btn-hover);
+    }
+
+    /* ── Member card ── */
+    .member-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 18px;
+        margin-bottom: 12px;
+        transition: transform 0.2s ease;
+    }
+
+    .member-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .member-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        flex-shrink: 0;
+    }
+
+    .member-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .member-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-heading);
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .member-relation {
+        font-size: 12px;
+        color: var(--color-muted);
+        font-weight: 500;
+    }
+
+    .member-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .btn-action {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 10px;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        transition: background 0.2s ease, transform 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.03);
+    }
+
+    .btn-diagnose {
+        background: rgba(127, 94, 152, 0.1);
+        color: var(--color-primary);
+    }
+
+    .btn-diagnose:hover {
+        background: rgba(127, 94, 152, 0.18);
+    }
+
+    .btn-record {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--color-body);
+    }
+
+    .btn-record:hover {
+        background: rgba(148, 163, 184, 0.18);
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.08);
+        color: var(--color-emergency);
+    }
+
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        color: rgba(127, 94, 152, 0.25);
+        margin-bottom: 16px;
+    }
+
+    .empty-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--color-heading);
+        margin-bottom: 6px;
+    }
+
+    .empty-sub {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin-bottom: 24px;
+    }
+
+    /* ── Skeleton ── */
+    .skeleton-member {
+        height: 84px;
+        border-radius: 18px;
+        margin-bottom: 12px;
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .modal-overlay.open {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+    }
+
+    /* ── Modal sheet ── */
+    .modal-sheet {
+        width: 100%;
+        max-width: 480px;
+        border-radius: 28px 28px 0 0;
+        padding: 8px 24px 40px;
+        background: var(--color-bg);
+        animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html.dark .modal-sheet {
+        background: #1a1025;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Drag handle */
+    .modal-handle {
+        width: 40px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--color-border);
+        margin: 12px auto 20px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--color-heading);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* ── Confirm delete modal ── */
+    .confirm-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .confirm-overlay.open {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .confirm-card {
+        width: 100%;
+        max-width: 340px;
+        border-radius: 22px;
+        padding: 28px 24px;
+        text-align: center;
+        background: var(--color-bg);
+        animation: cardIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html.dark .confirm-card {
+        background: #1a1025;
+    }
+
+    .confirm-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        background: rgba(239, 68, 68, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 22px;
+        color: var(--color-emergency);
+    }
+
+    .confirm-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--color-heading);
+        margin-bottom: 8px;
+    }
+
+    .confirm-sub {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-cancel-confirm {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1.5px solid var(--color-border);
+        background: transparent;
+        color: var(--color-body);
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        transition: background 0.2s ease;
+    }
+
+    .btn-cancel-confirm:hover {
+        background: rgba(127, 94, 152, 0.06);
+    }
+
+    .btn-confirm-delete {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        border: none;
+        background: var(--color-emergency);
+        color: #fff;
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-confirm-delete:hover {
+        opacity: 0.88;
+    }
+
+    .btn-confirm-delete:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="family-wrap">
+
+    <!-- Header -->
+    <div class="page-header anim-fade-up delay-1">
+        <h1 class="page-title" data-i18n="family.title">Family Board</h1>
+        <button class="btn-add" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i>
+            <span data-i18n="family.add_member">Add Member</span>
+        </button>
+    </div>
+
+    <!-- Error / Success -->
+    <div id="error-msg" class="msg-error anim-fade-up delay-2">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="error-text"></span>
+    </div>
+    <div id="success-msg" class="msg-success anim-fade-up delay-2">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="success-text"></span>
+    </div>
+
+    <!-- Skeleton -->
+    <div id="members-skeleton" class="anim-fade-up delay-2">
+        <div class="skeleton skeleton-member"></div>
+        <div class="skeleton skeleton-member"></div>
+    </div>
+
+    <!-- Members list -->
+    <div id="members-list" style="display:none"></div>
+
+    <!-- Empty state -->
+    <div id="members-empty" class="empty-state" style="display:none">
+        <div class="empty-icon"><i class="fa-solid fa-users"></i></div>
+        <p class="empty-title" data-i18n="family.no_members">No family members added yet</p>
+        <p class="empty-sub">Add your family members to manage their health</p>
+        <button class="btn-primary" style="max-width:200px;margin:0 auto" onclick="openAddModal()">
+            <span data-i18n="family.add_member">Add Member</span>
+        </button>
+    </div>
+
+</div>
+
+<!-- ── Add Member Modal ── -->
+<div id="add-modal" class="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="modal-title" data-i18n="family.add_member">Add Member</h2>
+
+        <!-- Error inside modal -->
+        <div id="modal-error" class="msg-error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="modal-error-text"></span>
+        </div>
+
+        <form id="add-form" novalidate>
+
+            <!-- Name -->
+            <div class="field-group">
+                <label class="field-label" data-i18n="family.name">Full Name</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user field-icon"></i>
+                    <input id="m-name" type="text" class="field-input" data-i18n-placeholder="family.name_placeholder"
+                        placeholder="Member's full name" required />
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field-group">
+                <label class="field-label" data-i18n="family.email">Email</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input id="m-email" type="email" class="field-input"
+                        data-i18n-placeholder="family.email_placeholder" placeholder="member@mail.com" required />
+                </div>
+            </div>
+
+            <!-- Relation -->
+            <div class="field-group">
+                <label class="field-label" data-i18n="family.relation">Relationship</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-heart field-icon"></i>
+                    <input id="m-relation" type="text" class="field-input"
+                        data-i18n-placeholder="family.relation_placeholder" placeholder="e.g. Wife, Son, Mother"
+                        required />
+                </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="field-group">
+                <label class="field-label" data-i18n="family.phone">Phone (optional)</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-phone field-icon"></i>
+                    <input id="m-phone" type="tel" class="field-input" data-i18n-placeholder="family.phone_placeholder"
+                        placeholder="05XXXXXXXX" />
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:8px">
+                <button type="button" class="btn-secondary" style="flex:1" onclick="closeAddModal()">
+                    <span data-i18n="family.cancel">Cancel</span>
+                </button>
+                <button type="submit" class="btn-primary" style="flex:2" id="add-btn">
+                    <span class="btn-text" data-i18n="family.add_btn">Add Member</span>
+                    <div class="btn-spinner"></div>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ── Confirm Delete Modal ── -->
+<div id="confirm-modal" class="confirm-overlay">
+    <div class="confirm-card">
+        <div class="confirm-icon"><i class="fa-solid fa-trash"></i></div>
+        <h3 class="confirm-title" data-i18n="family.delete">Delete Member</h3>
+        <p class="confirm-sub" data-i18n="family.confirm_delete">
+            Are you sure you want to remove this member?
+        </p>
+        <div class="confirm-actions">
+            <button class="btn-cancel-confirm" onclick="closeConfirmModal()">
+                <span data-i18n="common.close">Cancel</span>
+            </button>
+            <button class="btn-confirm-delete" id="confirm-delete-btn" onclick="confirmDelete()">
+                <span data-i18n="family.delete">Delete</span>
+            </button>
+        </div>
+    </div>
+</div>
+    <div class="nav-trigger" id="nav-trigger"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        // ── Auth ──
+        const session = Auth.requireAuth();
+        if (!session) return;
+
+        let members = [];
+        let pendingDeleteId = null;
+
+        // ── Message helpers ──
+        function showError(msg, inModal) {
+            if (inModal) {
+                document.getElementById('modal-error-text').textContent = msg;
+                document.getElementById('modal-error').classList.add('show');
+            } else {
+                document.getElementById('error-text').textContent = msg;
+                document.getElementById('error-msg').classList.add('show');
+                setTimeout(() => document.getElementById('error-msg').classList.remove('show'), 4000);
+            }
+        }
+
+        function showSuccess(msg) {
+            document.getElementById('error-msg').classList.remove('show');
+            document.getElementById('success-text').textContent = msg;
+            document.getElementById('success-msg').classList.add('show');
+            setTimeout(() => document.getElementById('success-msg').classList.remove('show'), 3000);
+        }
+
+        function hideModalError() {
+            document.getElementById('modal-error').classList.remove('show');
+        }
+
+        // ── Load members ──
+        async function loadMembers() {
+            const result = await Family.getMembers();
+
+            document.getElementById('members-skeleton').style.display = 'none';
+
+            members = result.members || [];
+            renderMembers();
+        }
+
+        function renderMembers() {
+            const list = document.getElementById('members-list');
+            const empty = document.getElementById('members-empty');
+
+            if (!members.length) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.style.display = 'block';
+            list.innerHTML = '';
+
+            members.forEach(member => {
+                const card = createMemberCard(member);
+                list.appendChild(card);
+            });
+        }
+
+        function createMemberCard(member) {
+            const initial = member.name ? member.name[0].toUpperCase() : '?';
+
+            const card = document.createElement('div');
+            card.className = 'glass-card member-card anim-fade-up';
+            card.innerHTML = `
+      <div class="member-avatar">${initial}</div>
+      <div class="member-info">
+        <div class="member-name">${escapeHtml(member.name)}</div>
+        <div class="member-relation">${escapeHtml(member.relation || '')}</div>
+      </div>
+      <div class="member-actions">
+        <button class="btn-action btn-diagnose" onclick="startDiagnosis(${member.id})">
+          <i class="fa-solid fa-stethoscope"></i>
+          <span data-i18n="family.start_diagnosis">Diagnose</span>
+        </button>
+        <button class="btn-action btn-record" onclick="viewRecord(${member.id})">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span data-i18n="family.view_record">Record</span>
+        </button>
+        <button class="btn-action btn-delete" onclick="openConfirmDelete(${member.id})">
+          <i class="fa-solid fa-trash"></i>
+          <span data-i18n="family.delete">Delete</span>
+        </button>
+      </div>
+    `;
+            return card;
+        }
+
+        function startDiagnosis(memberId) {
+            window.location.href = `/chatbot?member_id=${memberId}`;
+        }
+
+        function viewRecord(memberId) {
+            window.location.href = `/history?member_id=${memberId}`;
+        }
+
+        // ── Add modal ──
+        window.openAddModal = function () {
+            document.getElementById('add-modal').classList.add('open');
+            document.getElementById('m-name').focus();
+            hideModalError();
+        };
+
+        window.closeAddModal = function () {
+            document.getElementById('add-modal').classList.remove('open');
+            document.getElementById('add-form').reset();
+            hideModalError();
+        };
+
+        window.handleOverlayClick = function (e) {
+            if (e.target === document.getElementById('add-modal')) closeAddModal();
+        };
+
+        // ── Add form submit ──
+        document.getElementById('add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideModalError();
+
+            const name = document.getElementById('m-name').value.trim();
+            const email = document.getElementById('m-email').value.trim();
+            const relation = document.getElementById('m-relation').value.trim();
+            const phone = document.getElementById('m-phone').value.trim();
+
+            if (!name || !email || !relation) {
+                showError(t('common.required'), true);
+                return;
+            }
+            if (!email.includes('@')) {
+                showError(t('auth.email_error'), true);
+                return;
+            }
+
+            const btn = document.getElementById('add-btn');
+            btn.disabled = true;
+            btn.classList.add('btn-loading');
+
+            const result = await Family.addMember({ name, email, relation, phone });
+
+            btn.disabled = false;
+            btn.classList.remove('btn-loading');
+
+            if (!result.success) {
+                showError(result.message || t('common.error'), true);
+                return;
+            }
+
+            closeAddModal();
+            showSuccess(t('common.success'));
+            await loadMembers();
+        });
+
+        // ── Delete confirm ──
+        window.openConfirmDelete = function (memberId) {
+            pendingDeleteId = memberId;
+            document.getElementById('confirm-modal').classList.add('open');
+        };
+
+        window.closeConfirmModal = function () {
+            pendingDeleteId = null;
+            document.getElementById('confirm-modal').classList.remove('open');
+        };
+
+        window.confirmDelete = async function () {
+            if (!pendingDeleteId) return;
+
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.disabled = true;
+
+            const result = await Family.deleteMember(pendingDeleteId);
+
+            btn.disabled = false;
+            closeConfirmModal();
+
+            if (!result.success) {
+                showError(result.message || t('common.error'), false);
+                return;
+            }
+
+            showSuccess(t('common.success'));
+            await loadMembers();
+        };
+
+        // ── Utility ──
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // ── Footer hover trigger ──
+        const navTrigger = document.getElementById('nav-trigger');
+        const bottomNav = document.getElementById('bottom-nav');
+
+        if (navTrigger && bottomNav) {
+            navTrigger.addEventListener('mouseenter', () => {
+                bottomNav.classList.add('nav-visible');
+            });
+
+            bottomNav.addEventListener('mouseleave', () => {
+                bottomNav.classList.remove('nav-visible');
+            });
+        }
+
+        // ── Init ──
+        loadMembers();
+
+
+
+    })();
+</script>
+{% endblock %}

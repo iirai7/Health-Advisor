@@ -1,0 +1,396 @@
+{
+    "en": {
+        "app": {
+            "name": "Health Advisor"
+        },
+
+        "nav": {
+            "home": "Home",
+            "family": "Family",
+            "diagnose": "Diagnose",
+            "records": "Records",
+            "settings": "Settings"
+        },
+        "auth": {
+            "welcome_title": "Welcome to Health Advisor",
+
+            "welcome_subtitle": "Your personal AI-powered medical assistant",
+            "login_title": "Login",
+            "login_btn": "Login to System",
+            "register_title": "Create Account",
+            "register_btn": "Create Account",
+            "email": "Email",
+            "email_placeholder": "example@mail.com",
+            "password": "Password",
+            "password_placeholder": "Enter your password",
+            "name": "Full Name",
+            "name_placeholder": "Enter your full name",
+            "phone": "Phone Number",
+            "phone_placeholder": "05XXXXXXXX",
+            "forgot_password": "Forgot Password?",
+            "no_account": "Don't have an account?",
+            "have_account": "Already have an account?",
+            "register_link": "Create New Account",
+            "login_link": "Login",
+            "secure_note": "100% Secure and Fully Encrypted Connection",
+            "copyright": "© 2026 Health Advisor System",
+
+            "email_error": "Please enter a valid email address containing @"
+        },
+        "otp": {
+            "title": "Verify Your Email",
+            "subtitle": "We sent a 6-digit code to your email",
+            "code_label": "Verification Code",
+            "code_placeholder": "Enter 6-digit code",
+            "verify_btn": "Verify Account",
+            "resend": "Resend Code",
+            "resend_wait": "Resend in",
+            "seconds": "sec"
+        },
+        "forgot": {
+            "title": "Forgot Password",
+            "subtitle": "Enter your email to receive a reset code",
+            "email_label": "Email Address",
+            "send_btn": "Send Reset Code",
+            "back_login": "Back to Login"
+        },
+        "reset": {
+            "title": "Reset Password",
+            "subtitle": "Enter the code sent to your email and your new password",
+            "otp_label": "Reset Code",
+            "otp_placeholder": "Enter reset code",
+            "new_password": "New Password",
+            "new_password_placeholder": "Enter new password",
+            "confirm_password": "Confirm Password",
+            "confirm_placeholder": "Confirm new password",
+            "reset_btn": "Reset Password"
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "greeting_morning": "Good Morning",
+            "greeting_afternoon": "Good Afternoon",
+            "greeting_evening": "Good Evening",
+            "welcome_user": "Welcome back",
+            "family_section": "Family Members",
+            "all": "All",
+            "critical_cases": "Critical Cases",
+            "new_diagnosis": "Start New Diagnosis",
+            "history_section": "Medical History",
+            "view_record": "View Record",
+            "no_records": "No diagnosis records yet",
+            "date": "Friday, 24 April 2026"
+        },
+        "family": {
+            "title": "Family Board",
+            "add_member": "Add Member",
+            "name": "Full Name",
+            "name_placeholder": "Member's full name",
+            "email": "Email",
+            "email_placeholder": "member@mail.com",
+            "relation": "Relationship",
+            "relation_placeholder": "e.g. Wife, Son, Mother",
+            "phone": "Phone (optional)",
+            "phone_placeholder": "05XXXXXXXX",
+            "add_btn": "Add Member",
+            "cancel": "Cancel",
+            "delete": "Delete",
+            "start_diagnosis": "Start Diagnosis",
+            "view_record": "View Record",
+            "age": "Age",
+            "years": "Years",
+            "no_members": "No family members added yet",
+            "confirm_delete": "Are you sure you want to remove this member?"
+        },
+        "chatbot": {
+            "title": "Health Advisor",
+            "online": "Online",
+            "welcome_msg": "Welcome! How can I help you today? Describe the symptoms you are feeling.",
+            "placeholder": "Write the symptoms in detail here...",
+            "disclaimer": "Introductory diagnosis is not a substitute for a doctor's consultation",
+            "send": "Send",
+            "new_session": "New Session",
+            "emergency_msg": "🚨 Emergency detected! Please call 997 immediately.",
+            "symptoms": {
+                "headache": "Headache",
+                "fever": "Fever",
+                "dizziness": "Dizziness",
+                "chest_pain": "Chest Pain",
+                "cough": "Cough",
+                "fatigue": "Fatigue",
+                "nausea": "Nausea",
+                "done": "Done"
+            }
+        },
+        "history": {
+            "title": "Medical Records",
+            "subtitle": "All diagnosis results for you and your family",
+            "date": "Date",
+            "result": "Result",
+            "member": "Member",
+            "no_records": "No medical records found",
+            "filter_all": "All",
+            "filter_critical": "Critical"
+        },
+        "profile": {
+            "title": "Profile",
+            "name": "Full Name",
+            "email": "Email",
+            "phone": "Phone Number",
+            "edit": "Edit Profile",
+            "save": "Save Changes",
+            "cancel": "Cancel"
+        },
+        "settings": {
+            "title": "Settings",
+            "subtitle": "Customize your experience in the app",
+            "profile_section": "Profile",
+            "preferences_section": "Preferences",
+            "dark_mode": "Night Mode",
+            "language": "Language",
+            "system_section": "System",
+            "privacy": "Privacy & Security",
+            "about": "About App",
+            "logout": "Logout",
+            "delete_account": "Delete Account",
+            "confirm_logout": "Are you sure you want to logout?",
+            "confirm_delete": "Are you sure you want to delete your account? This cannot be undone."
+        },
+        "errors": {
+            "401_title": "Unauthorized",
+            "401_msg": "Please login to access this page.",
+            "404_title": "Page Not Found",
+            "404_msg": "The page you are looking for does not exist.",
+            "500_title": "Server Error",
+            "500_msg": "Something went wrong. Please try again later.",
+            "go_home": "Go Home",
+            "go_login": "Go to Login"
+        },
+        "common": {
+            "loading": "Loading...",
+            "error": "An error occurred. Please try again.",
+            "success": "Done successfully",
+            "required": "This field is required",
+            "close": "Close",
+            "confirm": "Confirm",
+            "back": "Back"
+        },
+        "privacy": {
+            "title": "Privacy Policy",
+            "section1_title": "1. Introduction",
+            "section1_text": "Welcome to Health Advisor. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.",
+            "section2_title": "2. Information We Collect",
+            "section2_text": "We collect personal information that you provide to us such as name, email address, and medical history. This information is used to provide you with a personalized preliminary diagnosis.",
+            "section3_title": "3. How We Use Your Information",
+            "section3_text": "We use the information we collect or receive to facilitate account creation, provide medical insights, and manage family profiles.",
+            "section4_title": "4. Data Security",
+            "section4_text": "We implement a variety of security measures to maintain the safety of your personal information. Your data is encrypted and stored securely.",
+            "section5_title": "5. Policy Updates",
+            "section5_text": "We may update this privacy policy from time to time. The updated version will be effective as soon as it is accessible."
+        },
+        "about": {
+            "title": "About Health Advisor",
+            "desc": "Health Advisor is an intelligent system designed to provide preliminary medical diagnosis based on AI technology. Our goal is to empower users with quick and accessible health insights.",
+            "version": "Version 1.0.0",
+            "developer": "Developed by Smart Systems Team",
+            "mission_title": "Our Mission",
+            "mission_text": "To bridge the gap between users and medical information using advanced AI, providing reliable preliminary guidance for better health management."
+        }
+    },
+    "ar": {
+        "app": {
+            "name": "مساعدك الصحي"
+        },
+
+        "nav": {
+            "home": "الرئيسية",
+            "family": "العائلة",
+            "diagnose": "تشخيص",
+            "records": "السجلات",
+            "settings": "الإعدادات"
+        },
+        "auth": {
+            "welcome_title": "أهلاً بك في منصة مساعدك الصحي",
+
+            "welcome_subtitle": "مساعدك الطبي الشخصي المدعوم بالذكاء الاصطناعي",
+            "login_title": "تسجيل الدخول",
+            "login_btn": "دخول للنظام",
+            "register_title": "إنشاء حساب",
+            "register_btn": "إنشاء الحساب",
+            "email": "البريد الإلكتروني",
+            "email_placeholder": "example@mail.com",
+            "password": "كلمة المرور",
+            "password_placeholder": "أدخل كلمة المرور",
+            "name": "الاسم بالكامل",
+            "name_placeholder": "أدخل اسمك الكامل",
+            "phone": "رقم الجوال",
+            "phone_placeholder": "05XXXXXXXX",
+            "forgot_password": "نسيت كلمة المرور؟",
+            "no_account": "ليس لديك حساب؟",
+            "have_account": "لديك حساب بالفعل؟",
+            "register_link": "إنشاء حساب جديد",
+            "login_link": "تسجيل الدخول",
+            "secure_note": "اتصال آمن بنسبة 100% ومشفر بالكامل",
+            "copyright": "© 2026 نظام مساعدك الصحي",
+
+            "email_error": "يرجى إدخال بريد إلكتروني صحيح يحتوي على @"
+        },
+        "otp": {
+            "title": "تحقق من بريدك الإلكتروني",
+            "subtitle": "أرسلنا رمزاً مكوناً من 6 أرقام إلى بريدك",
+            "code_label": "رمز التحقق",
+            "code_placeholder": "أدخل الرمز المكون من 6 أرقام",
+            "verify_btn": "تفعيل الحساب",
+            "resend": "إعادة الإرسال",
+            "resend_wait": "إعادة الإرسال خلال",
+            "seconds": "ث"
+        },
+        "forgot": {
+            "title": "نسيت كلمة المرور",
+            "subtitle": "أدخل بريدك الإلكتروني لتلقي رمز إعادة التعيين",
+            "email_label": "البريد الإلكتروني",
+            "send_btn": "إرسال رمز الاسترداد",
+            "back_login": "العودة لتسجيل الدخول"
+        },
+        "reset": {
+            "title": "إعادة تعيين كلمة المرور",
+            "subtitle": "أدخل الرمز المرسل إلى بريدك وكلمة المرور الجديدة",
+            "otp_label": "رمز الاسترداد",
+            "otp_placeholder": "أدخل رمز الاسترداد",
+            "new_password": "كلمة المرور الجديدة",
+            "new_password_placeholder": "أدخل كلمة المرور الجديدة",
+            "confirm_password": "تأكيد كلمة المرور",
+            "confirm_placeholder": "أعد إدخال كلمة المرور الجديدة",
+            "reset_btn": "إعادة تعيين كلمة المرور"
+        },
+        "dashboard": {
+            "title": "الرئيسية",
+            "greeting_morning": "صباح الخير",
+            "greeting_afternoon": "مساء الخير",
+            "greeting_evening": "مساء النور",
+            "welcome_user": "أهلاً بك مجدداً",
+            "family_section": "أفراد العائلة",
+            "all": "الكل",
+            "critical_cases": "حالات حرجة",
+            "new_diagnosis": "ابدأ تشخيصاً جديداً",
+            "history_section": "السجلات الطبية",
+            "view_record": "عرض السجل",
+            "no_records": "لا توجد سجلات تشخيص بعد",
+            "date": "الجمعة، ٢٤ أبريل ٢٠٢٦"
+        },
+        "family": {
+            "title": "لوحة أفراد العائلة",
+            "add_member": "إضافة فرد",
+            "name": "الاسم بالكامل",
+            "name_placeholder": "اسم الفرد بالكامل",
+            "email": "البريد الإلكتروني",
+            "email_placeholder": "member@mail.com",
+            "relation": "صلة القرابة",
+            "relation_placeholder": "مثال: زوجة، ابن، أم",
+            "phone": "رقم الجوال (اختياري)",
+            "phone_placeholder": "05XXXXXXXX",
+            "add_btn": "إضافة الفرد",
+            "cancel": "إلغاء",
+            "delete": "حذف",
+            "start_diagnosis": "ابدأ التشخيص",
+            "view_record": "عرض السجل",
+            "age": "العمر",
+            "years": "سنة",
+            "no_members": "لم تتم إضافة أفراد عائلة بعد",
+            "confirm_delete": "هل أنت متأكد من حذف هذا الفرد؟"
+        },
+        "chatbot": {
+            "title": "مساعدك الصحي",
+            "online": "متصل",
+            "welcome_msg": "أهلاً بك، كيف يمكنني مساعدتك اليوم؟ صف لي الأعراض التي تشعر بها.",
+            "placeholder": "اكتب الأعراض بالتفصيل هنا...",
+            "disclaimer": "تشخيص استرشادي لا يغني عن استشارة الطبيب",
+            "send": "إرسال",
+            "new_session": "جلسة جديدة",
+            "emergency_msg": "🚨 تم اكتشاف حالة طارئة! يرجى الاتصال بـ 997 فوراً.",
+            "symptoms": {
+                "headache": "صداع",
+                "fever": "حرارة",
+                "dizziness": "دوخة",
+                "chest_pain": "ألم صدر",
+                "cough": "سعال",
+                "fatigue": "إرهاق",
+                "nausea": "غثيان",
+                "done": "انتهيت"
+            }
+        },
+        "history": {
+            "title": "السجلات الطبية",
+            "subtitle": "جميع نتائج التشخيص لك ولعائلتك",
+            "date": "التاريخ",
+            "result": "النتيجة",
+            "member": "الفرد",
+            "no_records": "لا توجد سجلات طبية",
+            "filter_all": "الكل",
+            "filter_critical": "حرجة"
+        },
+        "profile": {
+            "title": "الملف الشخصي",
+            "name": "الاسم بالكامل",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الجوال",
+            "edit": "تعديل الملف",
+            "save": "حفظ التغييرات",
+            "cancel": "إلغاء"
+        },
+        "settings": {
+            "title": "الإعدادات",
+            "subtitle": "تخصيص تجربتك في التطبيق",
+            "profile_section": "الملف الشخصي",
+            "preferences_section": "التفضيلات",
+            "dark_mode": "الوضع الليلي",
+            "language": "اللغة",
+            "system_section": "النظام",
+            "privacy": "الخصوصية والأمان",
+            "about": "حول التطبيق",
+            "logout": "تسجيل الخروج",
+            "delete_account": "حذف الحساب",
+            "confirm_logout": "هل أنت متأكد من تسجيل الخروج؟",
+            "confirm_delete": "هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء."
+        },
+        "errors": {
+            "401_title": "غير مصرح",
+            "401_msg": "يرجى تسجيل الدخول للوصول إلى هذه الصفحة.",
+            "404_title": "الصفحة غير موجودة",
+            "404_msg": "الصفحة التي تبحث عنها غير موجودة.",
+            "500_title": "خطأ في الخادم",
+            "500_msg": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً.",
+            "go_home": "الرئيسية",
+            "go_login": "تسجيل الدخول"
+        },
+        "common": {
+            "loading": "جاري التحميل...",
+            "error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+            "success": "تمت العملية بنجاح",
+            "required": "هذا الحقل مطلوب",
+            "close": "إغلاق",
+            "confirm": "تأكيد",
+            "back": "رجوع"
+        },
+        "privacy": {
+            "title": "سياسة الخصوصية",
+            "section1_title": "١. مقدمة",
+            "section1_text": "أهلاً بك في مساعدك الصحي. نحن ملتزمون بحماية معلوماتك الشخصية وحقك في الخصوصية. إذا كانت لديك أي أسئلة أو مخاوف بشأن سياستنا، يرجى الاتصال بنا.",
+            "section2_title": "٢. المعلومات التي نجمعها",
+            "section2_text": "نحن نجمع المعلومات الشخصية التي تقدمها لنا مثل الاسم وعنوان البريد الإلكتروني والتاريخ الطبي. تُستخدم هذه المعلومات لتزويدك بتشخيص أولي مخصص.",
+            "section3_title": "٣. كيف نستخدم معلوماتك",
+            "section3_text": "نستخدم المعلومات التي نجمعها لتسهيل إنشاء الحساب، وتقديم رؤى طبية، وإدارة ملفات العائلة.",
+            "section4_title": "٤. أمن البيانات",
+            "section4_text": "نحن نطبق مجموعة متنوعة من الإجراءات الأمنية للحفاظ على سلامة معلوماتك الشخصية. يتم تشفير بياناتك وتخزينها بشكل آمن.",
+            "section5_title": "٥. تحديثات السياسة",
+            "section5_text": "قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. ستكون النسخة المحدثة فعالة بمجرد إتاحتها."
+        },
+        "about": {
+            "title": "حول مساعدك الصحي",
+            "desc": "مساعدك الصحي هو نظام ذكي مصمم لتقديم تشخيص طبي أولي يعتمد على تقنية الذكاء الاصطناعي. هدفنا هو تمكين المستخدمين من الحصول على رؤى صحية سريعة وسهلة الوصول.",
+            "version": "الإصدار ١.٠.٠",
+            "developer": "تم التطوير بواسطة فريق الأنظمة الذكية",
+            "mission_title": "مهمتنا",
+            "mission_text": "سد الفجوة بين المستخدمين والمعلومات الطبية باستخدام الذكاء الاصطناعي المتقدم، وتقديم توجيه أولي موثوق لإدارة أفضل للصحة."
+        }
+    }
+}

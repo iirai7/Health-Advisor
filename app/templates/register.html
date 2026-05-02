@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Register{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+
+    <!-- Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <button class="toggle-btn" onclick="toggleLanguage()">
+            <span id="lang-label">AR</span>
+        </button>
+        <button class="toggle-btn" onclick="toggleTheme()">
+            <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card auth-card anim-card-in">
+
+        <!-- Back -->
+        <a href="/login" class="back-link anim-fade-up delay-1">
+            <i class="fa-solid fa-arrow-left rtl-flip"></i>
+            <span data-i18n="common.back">Back</span>
+        </a>
+
+        <!-- Logo -->
+        <div class="logo-small anim-fade-up delay-2">
+            <div class="logo-icon">
+                <i class="fa-solid fa-stethoscope text-white" style="font-size:18px"></i>
+            </div>
+            <span class="logo-text" data-i18n="app.name">Health Advisor</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="card-title anim-fade-up delay-2" data-i18n="auth.register_title">Create Account</h1>
+        <p class="card-subtitle anim-fade-up delay-3" data-i18n="auth.welcome_subtitle">
+            Your personal AI-powered medical assistant
+        </p>
+
+        <!-- Error -->
+        <div id="error-msg" class="msg-error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <!-- Success -->
+        <div id="success-msg" class="msg-success">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="success-text"></span>
+        </div>
+
+        <!-- Form -->
+        <form id="register-form" novalidate>
+
+            <!-- Full Name -->
+            <div class="field-group anim-fade-up delay-3">
+                <label class="field-label" for="name" data-i18n="auth.name">Full Name</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user field-icon"></i>
+                    <input id="name" type="text" name="name" class="field-input"
+                        data-i18n-placeholder="auth.name_placeholder" placeholder="Enter your full name"
+                        autocomplete="name" required />
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field-group anim-fade-up delay-3">
+                <label class="field-label" for="email" data-i18n="auth.email">Email</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope field-icon"></i>
+                    <input id="email" type="email" name="email" class="field-input"
+                        data-i18n-placeholder="auth.email_placeholder" placeholder="example@mail.com"
+                        autocomplete="email" required />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="field-group anim-fade-up delay-4">
+                <label class="field-label" for="password" data-i18n="auth.password">Password</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input id="password" type="password" name="password" class="field-input has-toggle"
+                        data-i18n-placeholder="auth.password_placeholder" placeholder="Enter your password"
+                        autocomplete="new-password" required />
+                    <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Toggle password visibility">
+                        <i class="fa-solid fa-eye" id="pw-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Phone (optional) -->
+            <div class="field-group anim-fade-up delay-4">
+                <label class="field-label" for="phone" data-i18n="auth.phone">Phone Number</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-phone field-icon"></i>
+                    <input id="phone" type="tel" name="phone" class="field-input"
+                        data-i18n-placeholder="auth.phone_placeholder" placeholder="05XXXXXXXX" autocomplete="tel" />
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-primary anim-fade-up delay-5" id="register-btn" style="margin-top:8px">
+                <span class="btn-text" data-i18n="auth.register_btn">Create Account</span>
+                <div class="btn-spinner"></div>
+            </button>
+
+        </form>
+
+        <!-- Footer -->
+        <div class="auth-footer anim-fade-up delay-6">
+            <span data-i18n="auth.have_account">Already have an account?</span>
+            <a href="/login" data-i18n="auth.login_link"> Login</a>
+        </div>
+
+        <!-- Security Badge -->
+        <div style="display:flex;justify-content:center;margin-top:16px" class="anim-fade-up delay-6">
+            <div class="security-badge">
+                <i class="fa-solid fa-lock text-xs text-primary"></i>
+                <span data-i18n="auth.secure_note">100% Secure and Fully Encrypted</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <p class="page-copyright anim-fade-up delay-7" data-i18n="auth.copyright">
+        © 2026 Health Advisor
+    </p>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        // ── Sync toggles ──
+        const lang = localStorage.getItem('lang') || 'en';
+        const theme = localStorage.getItem('theme') || 'light';
+        const langLabel = document.getElementById('lang-label');
+        const themeIcon = document.getElementById('theme-icon');
+        if (langLabel) langLabel.textContent = lang === 'ar' ? 'EN' : 'AR';
+        if (themeIcon) {
+            themeIcon.classList.toggle('fa-moon', theme !== 'dark');
+            themeIcon.classList.toggle('fa-sun', theme === 'dark');
+        }
+
+        // ── Redirect if already logged in ──
+        if (localStorage.getItem('token')) {
+            window.location.href = '/dashboard';
+            return;
+        }
+
+        // ── Password toggle ──
+        const pwToggle = document.getElementById('pw-toggle');
+        const pwInput = document.getElementById('password');
+        const pwIcon = document.getElementById('pw-icon');
+        pwToggle.addEventListener('click', () => {
+            const show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            pwIcon.classList.toggle('fa-eye', !show);
+            pwIcon.classList.toggle('fa-eye-slash', show);
+        });
+
+        // ── Message helpers ──
+        function showError(msg) {
+            const box = document.getElementById('error-msg');
+            const text = document.getElementById('error-text');
+            document.getElementById('success-msg').classList.remove('show');
+            text.textContent = msg;
+            box.classList.add('show');
+        }
+
+        function showSuccess(msg) {
+            const box = document.getElementById('success-msg');
+            const text = document.getElementById('success-text');
+            document.getElementById('error-msg').classList.remove('show');
+            text.textContent = msg;
+            box.classList.add('show');
+        }
+
+        function hideMessages() {
+            document.getElementById('error-msg').classList.remove('show');
+            document.getElementById('success-msg').classList.remove('show');
+        }
+
+        // ── Loading state ──
+        function setLoading(state) {
+            const btn = document.getElementById('register-btn');
+            btn.disabled = state;
+            btn.classList.toggle('btn-loading', state);
+        }
+
+        // ── Form submit ──
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value.trim();
+
+            // Validation
+            if (!name) {
+                showError(t('common.required'));
+                return;
+            }
+            if (!email || !email.includes('@')) {
+                showError(t('auth.email_error'));
+                return;
+            }
+            if (!password || password.length < 6) {
+                showError(t('common.required'));
+                return;
+            }
+
+            setLoading(true);
+            const result = await Auth.register(name, email, password, phone || null);
+            setLoading(false);
+
+            if (!result.success) {
+                showError(result.message || t('common.error'));
+            }
+            // On success Auth.register redirects to /verify-otp automatically
+        });
+
+    })();
+</script>
+{% endblock %}

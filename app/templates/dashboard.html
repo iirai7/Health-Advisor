@@ -1,0 +1,653 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Dashboard{% endblock %}
+
+{% block head %}
+<style>
+    /* ── Page layout ── */
+    .dash-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 16px 24px;
+    }
+
+    /* ── Greeting ── */
+    .greeting-section {
+        margin-bottom: 24px;
+    }
+
+    .greeting-sub {
+        font-size: 13px;
+        color: var(--color-muted);
+        font-weight: 400;
+        margin-bottom: 2px;
+    }
+
+    .greeting-name {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--color-heading);
+        letter-spacing: -0.5px;
+    }
+
+    .greeting-name span {
+        color: var(--color-primary);
+    }
+
+    /* ── Section header ── */
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+
+    .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-heading);
+    }
+
+    .section-link {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+
+    .section-link:hover {
+        text-decoration: underline;
+    }
+
+    /* ── Family slider ── */
+    .family-slider {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin-bottom: 24px;
+    }
+
+    .family-slider::-webkit-scrollbar {
+        display: none;
+    }
+
+    .avatar-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .avatar-item:hover {
+        transform: translateY(-3px);
+    }
+
+    .avatar-ring {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-secondary), #64748B);
+        border: 2.5px solid transparent;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+    }
+
+    .avatar-ring.active {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(127, 94, 152, 0.2);
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+    }
+
+    .avatar-ring.all-avatar {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        font-size: 14px;
+    }
+
+    .avatar-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-muted);
+        text-align: center;
+        max-width: 56px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.2s ease;
+    }
+
+    .avatar-item.active .avatar-name {
+        color: var(--color-primary);
+    }
+
+    /* Critical badge on avatar */
+    .avatar-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--color-emergency);
+        border: 2px solid var(--color-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    /* ── Start Diagnosis CTA ── */
+    .cta-card {
+        border-radius: 22px;
+        padding: 24px 20px;
+        margin-bottom: 24px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 8px 24px rgba(127, 94, 152, 0.35);
+    }
+
+    .cta-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(127, 94, 152, 0.45);
+    }
+
+    .cta-card:active {
+        transform: translateY(0);
+    }
+
+    /* Decorative circle inside CTA */
+    .cta-deco {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        top: -40px;
+        right: -30px;
+        pointer-events: none;
+    }
+
+    .cta-deco-2 {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        bottom: -20px;
+        right: 60px;
+        pointer-events: none;
+    }
+
+    .cta-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 20px;
+        color: #fff;
+    }
+
+    .cta-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 4px;
+    }
+
+    .cta-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 400;
+    }
+
+    .cta-arrow {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+    }
+
+    html[dir="rtl"] .cta-arrow {
+        right: auto;
+        left: 20px;
+        transform: translateY(-50%) scaleX(-1);
+    }
+
+    /* ── Records list ── */
+    .record-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .record-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(127, 94, 152, 0.1);
+    }
+
+    .record-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        background: rgba(127, 94, 152, 0.1);
+        color: var(--color-primary);
+    }
+
+    .record-icon.emergency {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-emergency);
+    }
+
+    .record-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .record-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--color-heading);
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .record-meta {
+        font-size: 12px;
+        color: var(--color-muted);
+    }
+
+    .record-date {
+        font-size: 11px;
+        color: var(--color-muted);
+        text-align: end;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--color-muted);
+    }
+
+    .empty-icon {
+        font-size: 40px;
+        color: rgba(127, 94, 152, 0.25);
+        margin-bottom: 12px;
+    }
+
+    .empty-text {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* ── Skeleton loader ── */
+    .skeleton {
+        background: linear-gradient(90deg,
+                rgba(127, 94, 152, 0.06) 25%,
+                rgba(127, 94, 152, 0.12) 50%,
+                rgba(127, 94, 152, 0.06) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 10px;
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .skeleton-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        flex-shrink: 0;
+    }
+
+    .skeleton-record {
+        height: 70px;
+        border-radius: 16px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+    <!-- Greeting -->
+    <div class="greeting-section anim-fade-up delay-1">
+        <p class="greeting-sub" id="greeting-time"></p>
+        <h1 class="greeting-name">
+            <span data-i18n="dashboard.title">Dashboard</span>,
+            <span id="user-name-display">...</span> 👋
+        </h1>
+    </div>
+
+    <!-- Family Members -->
+    <div class="anim-fade-up delay-2">
+        <div class="section-header">
+            <span class="section-title" data-i18n="dashboard.family_section">Family Members</span>
+            <a href="/family" class="section-link" data-i18n="family.add_member">Add Member</a>
+        </div>
+
+        <!-- Skeleton -->
+        <div id="family-skeleton" class="family-slider">
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="skeleton skeleton-avatar"></div>
+        </div>
+
+        <!-- Actual slider -->
+        <div id="family-slider" class="family-slider" style="display:none"></div>
+    </div>
+
+    <!-- Start Diagnosis CTA -->
+    <div class="anim-fade-up delay-3">
+        <a href="/chatbot" id="cta-card" class="cta-card" style="display:block;text-decoration:none">
+            <div class="cta-deco"></div>
+            <div class="cta-deco-2"></div>
+            <div class="cta-icon"><i class="fa-solid fa-stethoscope"></i></div>
+            <p class="cta-title" data-i18n="dashboard.new_diagnosis">Start New Diagnosis</p>
+            <p class="cta-sub" id="cta-sub">for <span id="cta-member-name">yourself</span></p>
+            <i class="fa-solid fa-arrow-right cta-arrow"></i>
+        </a>
+    </div>
+
+    <!-- Recent Records -->
+    <div class="anim-fade-up delay-4">
+        <div class="section-header">
+            <span class="section-title" data-i18n="dashboard.history_section">Medical History</span>
+            <a href="/history" class="section-link">View All</a>
+        </div>
+
+        <!-- Skeleton -->
+        <div id="records-skeleton">
+            <div class="skeleton skeleton-record"></div>
+            <div class="skeleton skeleton-record"></div>
+        </div>
+
+        <!-- Records list -->
+        <div id="records-list" style="display:none"></div>
+
+        <!-- Empty state -->
+        <div id="records-empty" class="empty-state" style="display:none">
+            <div class="empty-icon"><i class="fa-solid fa-notes-medical"></i></div>
+            <p class="empty-text" data-i18n="dashboard.no_records">No diagnosis records yet</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        // ── Auth check ──
+        const session = Auth.requireAuth();
+        if (!session) return;
+
+        const { user_id, user_name } = session;
+
+        // ── State ──
+        let allMembers = [];
+        let allSessions = [];
+        let activeMember = null; // null = "All"
+        let isChildUser = false;
+        let parentUserId = null;
+
+        // ── Greeting ──
+        (function setGreeting() {
+            const hour = new Date().getHours();
+            let key = hour < 12 ? 'dashboard.greeting_morning'
+                : hour < 18 ? 'dashboard.greeting_afternoon'
+                    : 'dashboard.greeting_evening';
+            
+            const el = document.getElementById('greeting-time');
+            if (el) {
+                el.setAttribute('data-i18n', key);
+            }
+
+            const nameEl = document.getElementById('user-name-display');
+            if (nameEl) {
+                nameEl.textContent = user_name ? user_name.split(' ')[0] : '';
+            }
+        })();
+
+        // ── Load family members ──
+        async function loadFamily() {
+            const result = await Family.getMembers();
+
+            document.getElementById('family-skeleton').style.display = 'none';
+            document.getElementById('family-slider').style.display = 'flex';
+
+            allMembers = result.members || [];
+
+            if (!allMembers.length) {
+                // Child user — get parent_user_id from profile
+                const profile = await API.get('/api/users/profile');
+                if (profile.success && profile.data && profile.data.parent_user_id) {
+                    isChildUser = true;
+                    parentUserId = profile.data.parent_user_id;
+
+                    // Fetch parent's family members
+                    const parentResult = await API.get(`/api/family/parent/${parentUserId}`);
+                    allMembers = parentResult.data || [];
+                }
+            }
+
+            renderFamilySlider();
+        }
+
+        function renderFamilySlider() {
+            const slider = document.getElementById('family-slider');
+            slider.innerHTML = '';
+
+            // "All" avatar
+            const allItem = createAvatarItem({
+                label: t('dashboard.all'),
+                initial: t('dashboard.all')[0],
+                isAll: true,
+                isActive: activeMember === null,
+            });
+            allItem.addEventListener('click', () => selectMember(null));
+            slider.appendChild(allItem);
+
+            // Self avatar
+            const selfItem = createAvatarItem({
+                label: user_name ? user_name.split(' ')[0] : 'Me',
+                initial: user_name ? user_name[0].toUpperCase() : 'M',
+                isActive: activeMember === 'self',
+            });
+            selfItem.addEventListener('click', () => selectMember('self'));
+            slider.appendChild(selfItem);
+
+            // Family members
+            allMembers.forEach(member => {
+                const item = createAvatarItem({
+                    label: member.name.split(' ')[0],
+                    initial: member.name[0].toUpperCase(),
+                    isActive: activeMember === member.id,
+                });
+                item.addEventListener('click', () => selectMember(member.id));
+                slider.appendChild(item);
+            });
+        }
+
+        function createAvatarItem({ label, initial, isAll, isActive }) {
+            const item = document.createElement('div');
+            item.className = `avatar-item${isActive ? ' active' : ''}`;
+
+            const ring = document.createElement('div');
+            ring.className = `avatar-ring${isAll ? ' all-avatar' : ''}${isActive ? ' active' : ''}`;
+            ring.textContent = initial;
+
+            const name = document.createElement('span');
+            name.className = 'avatar-name';
+            name.textContent = label;
+
+            item.appendChild(ring);
+            item.appendChild(name);
+            return item;
+        }
+
+        async function selectMember(memberId) {
+            activeMember = memberId;
+            renderFamilySlider();
+
+            // Show skeleton while loading
+            document.getElementById('records-skeleton').style.display = 'block';
+            document.getElementById('records-list').style.display = 'none';
+            document.getElementById('records-empty').style.display = 'none';
+
+            if (memberId === null || memberId === 'self') {
+                // Load primary user's own history
+                const result = await Chatbot.getHistory(user_id);
+                allSessions = result.sessions || [];
+            } else {
+                // Load selected family member's history
+                const result = await Chatbot.getHistory(memberId);
+                allSessions = result.sessions || [];
+            }
+
+            document.getElementById('records-skeleton').style.display = 'none';
+            renderRecords();
+
+            // Update CTA
+            if (memberId === null) {
+                document.getElementById('cta-member-name').textContent = t('dashboard.all');
+                document.getElementById('cta-card').href = '/chatbot';
+            } else if (memberId === 'self') {
+                document.getElementById('cta-member-name').textContent =
+                    user_name ? user_name.split(' ')[0] : 'yourself';
+                document.getElementById('cta-card').href = '/chatbot';
+            } else {
+                const member = allMembers.find(m => m.id === memberId);
+                if (member) {
+                    document.getElementById('cta-member-name').textContent = member.name.split(' ')[0];
+                    document.getElementById('cta-card').href = `/chatbot?member_id=${memberId}`;
+                }
+            }
+        }
+
+        // ── Load history ──
+        async function loadHistory() {
+            const result = await Chatbot.getHistory(user_id);
+
+            document.getElementById('records-skeleton').style.display = 'none';
+            document.getElementById('records-list').style.display = 'block';
+
+            allSessions = result.sessions || [];
+            renderRecords();
+        }
+
+        function renderRecords() {
+            const list = document.getElementById('records-list');
+            const empty = document.getElementById('records-empty');
+            list.innerHTML = '';
+
+            const sessions = allSessions;
+
+            // Show latest 5
+            const recent = sessions.slice(0, 5);
+
+            if (!recent.length) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.style.display = 'block';
+
+            recent.forEach(session => {
+                const card = createRecordCard(session);
+                list.appendChild(card);
+            });
+        }
+
+        function createRecordCard(session) {
+            const isEmergency = session.had_emergency || false;
+            const date = session.created_at
+                ? new Date(session.created_at).toLocaleDateString(
+                    getCurrentLang() === 'ar' ? 'ar-SA' : 'en-US',
+                    { month: 'short', day: 'numeric' }
+                )
+                : '';
+
+            const lastMsg = session.messages && session.messages.length
+                ? session.messages[session.messages.length - 1].content
+                : t('history.no_records');
+
+            const card = document.createElement('div');
+            card.className = 'glass-card record-card';
+            card.innerHTML = `
+      <div class="record-icon ${isEmergency ? 'emergency' : ''}">
+        <i class="fa-solid ${isEmergency ? 'fa-triangle-exclamation' : 'fa-notes-medical'}"></i>
+      </div>
+      <div class="record-info">
+        <div class="record-title">${escapeHtml(lastMsg.slice(0, 50))}${lastMsg.length > 50 ? '...' : ''}</div>
+        <div class="record-meta">${escapeHtml(session.member_name || user_name || '')}</div>
+      </div>
+      <div class="record-date">${date}</div>
+    `;
+            card.addEventListener('click', () => {
+                window.location.href = '/history';
+            });
+            return card;
+        }
+
+        // ── Utility ──
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // ── Init ──
+        loadFamily();
+        loadHistory();
+
+    })();
+</script>
+{% endblock %}

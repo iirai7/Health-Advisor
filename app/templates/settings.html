@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Settings{% endblock %}
+
+{% block head %}
+<style>
+    .settings-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 16px 24px;
+    }
+
+    /* ── Page header ── */
+    .page-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--color-heading);
+        letter-spacing: -0.4px;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin-bottom: 24px;
+    }
+
+    /* ── Profile card ── */
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 16px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .profile-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 17px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: var(--shadow-logo);
+    }
+
+    .profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--color-heading);
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .profile-email {
+        font-size: 12px;
+        color: var(--color-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .profile-arrow {
+        color: var(--color-muted);
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 0 4px;
+        margin-bottom: 8px;
+        margin-top: 20px;
+    }
+
+    .section-label:first-of-type {
+        margin-top: 0;
+    }
+
+    /* ── Settings item ── */
+    .settings-group {
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    .settings-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        border-bottom: none;
+    }
+
+    .settings-item:last-child {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .settings-item:not(:last-child) {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .settings-item:first-child {
+        border-radius: 18px 18px 0 0;
+    }
+
+    .settings-item:last-child {
+        border-radius: 0 0 18px 18px;
+    }
+
+    .settings-item:only-child {
+        border-radius: 18px;
+    }
+
+    .settings-item:hover {
+        background: rgba(127, 94, 152, 0.05);
+    }
+
+    html.dark .settings-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .item-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+        background: rgba(127, 94, 152, 0.1);
+        color: var(--color-primary);
+    }
+
+    .item-text {
+        flex: 1;
+    }
+
+    .item-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-heading);
+        margin-bottom: 1px;
+    }
+
+    .item-sub {
+        font-size: 11px;
+        color: var(--color-muted);
+    }
+
+    .item-right {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-switch {
+        position: relative;
+        width: 46px;
+        height: 26px;
+        cursor: pointer;
+    }
+
+    .toggle-switch input {
+        display: none;
+    }
+
+    .toggle-track {
+        width: 46px;
+        height: 26px;
+        border-radius: 13px;
+        background: var(--color-border);
+        transition: background 0.25s ease;
+        position: relative;
+    }
+
+    .toggle-switch input:checked+.toggle-track {
+        background: var(--color-primary);
+    }
+
+    .toggle-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toggle-switch input:checked~.toggle-track .toggle-thumb {
+        transform: translateX(20px);
+    }
+
+    /* ── Language value ── */
+    .lang-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-primary);
+        padding: 4px 10px;
+        border-radius: 8px;
+        background: rgba(127, 94, 152, 0.1);
+    }
+
+    /* ── Chevron ── */
+    .item-chevron {
+        color: var(--color-muted);
+        font-size: 12px;
+    }
+
+    /* ── Logout button ── */
+    .logout-item .item-icon {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-emergency);
+    }
+
+    .logout-item .item-label {
+        color: var(--color-emergency);
+    }
+
+    /* ── App info ── */
+    .app-info {
+        text-align: center;
+        padding: 24px 0 8px;
+        color: var(--color-muted);
+        font-size: 12px;
+    }
+
+    .app-version {
+        font-size: 11px;
+        color: var(--color-placeholder);
+        margin-top: 4px;
+    }
+
+    /* ── Confirm modal ── */
+    .confirm-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .confirm-overlay.open {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .confirm-card {
+        width: 100%;
+        max-width: 320px;
+        border-radius: 22px;
+        padding: 28px 24px;
+        text-align: center;
+        background: var(--color-bg);
+        animation: cardIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html.dark .confirm-card {
+        background: #1a1025;
+    }
+
+    .confirm-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        background: rgba(239, 68, 68, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 22px;
+        color: var(--color-emergency);
+    }
+
+    .confirm-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--color-heading);
+        margin-bottom: 8px;
+    }
+
+    .confirm-sub {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1.5px solid var(--color-border);
+        background: transparent;
+        color: var(--color-body);
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        transition: background 0.2s ease;
+    }
+
+    .btn-cancel:hover {
+        background: rgba(127, 94, 152, 0.06);
+    }
+
+    .btn-logout-confirm {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        border: none;
+        background: var(--color-emergency);
+        color: #fff;
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-logout-confirm:hover {
+        opacity: 0.88;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-wrap">
+
+    <!-- Header -->
+    <div class="anim-fade-up delay-1">
+        <h1 class="page-title" data-i18n="settings.title">Settings</h1>
+        <p class="page-subtitle" data-i18n="settings.subtitle">Customize your experience in the app</p>
+    </div>
+
+    <!-- Profile card -->
+    <a href="/profile" class="glass-card profile-card anim-fade-up delay-2" style="text-decoration:none">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-info">
+            <div class="profile-name" id="profile-name">...</div>
+            <div class="profile-email" id="profile-email">...</div>
+        </div>
+        <i class="fa-solid fa-chevron-right profile-arrow rtl-flip"></i>
+    </a>
+
+    <!-- Preferences -->
+    <p class="section-label anim-fade-up delay-2" data-i18n="settings.preferences_section">Preferences</p>
+    <div class="settings-group anim-fade-up delay-3">
+
+        <!-- Dark mode -->
+        <div class="settings-item" onclick="handleThemeToggle()">
+            <div class="item-icon"><i class="fa-solid fa-moon"></i></div>
+            <div class="item-text">
+                <div class="item-label" data-i18n="settings.dark_mode">Night Mode</div>
+            </div>
+            <div class="item-right">
+                <label class="toggle-switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="dark-toggle" onchange="handleThemeToggle()">
+                    <div class="toggle-track">
+                        <div class="toggle-thumb"></div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Language -->
+        <div class="settings-item" onclick="handleLanguageToggle()">
+            <div class="item-icon"><i class="fa-solid fa-globe"></i></div>
+            <div class="item-text">
+                <div class="item-label" data-i18n="settings.language">Language</div>
+            </div>
+            <div class="item-right">
+                <span class="lang-value" id="lang-display">EN</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- System -->
+    <p class="section-label anim-fade-up delay-3" data-i18n="settings.system_section">System</p>
+    <div class="settings-group anim-fade-up delay-4">
+
+        <!-- Privacy -->
+        <div class="settings-item" onclick="window.location.href='/privacy'">
+            <div class="item-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="item-text">
+                <div class="item-label" data-i18n="settings.privacy">Privacy & Security</div>
+            </div>
+            <div class="item-right">
+                <i class="fa-solid fa-chevron-right item-chevron rtl-flip"></i>
+            </div>
+        </div>
+
+        <!-- About -->
+        <div class="settings-item" onclick="window.location.href='/about'">
+            <div class="item-icon"><i class="fa-solid fa-circle-info"></i></div>
+            <div class="item-text">
+                <div class="item-label" data-i18n="settings.about">About App</div>
+                <div class="item-sub">Version 1.0.0</div>
+            </div>
+            <div class="item-right">
+                <i class="fa-solid fa-chevron-right item-chevron rtl-flip"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logout -->
+    <div class="settings-group anim-fade-up delay-5" style="margin-top:20px">
+        <div class="settings-item logout-item" onclick="openLogoutConfirm()">
+            <div class="item-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <div class="item-text">
+                <div class="item-label" data-i18n="settings.logout">Logout</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App info -->
+    <div class="app-info anim-fade-up delay-6">
+        <div data-i18n="app.name">Health Advisor</div>
+        <div class="app-version" data-i18n="auth.copyright">© 2026 Health Advisor</div>
+    </div>
+
+</div>
+
+<!-- Logout confirm modal -->
+<div id="logout-modal" class="confirm-overlay">
+    <div class="confirm-card">
+        <div class="confirm-icon">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </div>
+        <h3 class="confirm-title" data-i18n="settings.logout">Logout</h3>
+        <p class="confirm-sub" data-i18n="settings.confirm_logout">
+            Are you sure you want to logout?
+        </p>
+        <div class="confirm-actions">
+            <button class="btn-cancel" onclick="closeLogoutConfirm()" data-i18n="common.close">Cancel</button>
+            <button class="btn-logout-confirm" onclick="handleLogout()" data-i18n="settings.logout">Logout</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        const session = Auth.requireAuth();
+        if (!session) return;
+
+        const { user_name } = session;
+
+        // ── Load profile info ──
+        (async function loadProfile() {
+            const result = await API.get('/api/users/profile');
+            if (result.success && result.data) {
+                const name = result.data.name || user_name || '';
+                const email = result.data.email || '';
+                document.getElementById('profile-name').textContent = name;
+                document.getElementById('profile-email').textContent = email;
+                document.getElementById('profile-avatar').textContent = name ? name[0].toUpperCase() : '?';
+            } else {
+                document.getElementById('profile-name').textContent = user_name || '';
+                document.getElementById('profile-avatar').textContent = user_name ? user_name[0].toUpperCase() : '?';
+            }
+        })();
+
+        // ── Sync theme toggle ──
+        (function syncTheme() {
+            const isDark = localStorage.getItem('theme') === 'dark';
+            document.getElementById('dark-toggle').checked = isDark;
+        })();
+
+        // ── Sync language display ──
+        (function syncLang() {
+            const lang = localStorage.getItem('lang') || 'en';
+            document.getElementById('lang-display').textContent = lang.toUpperCase();
+        })();
+
+        // ── Theme toggle ──
+        window.handleThemeToggle = function () {
+            const current = localStorage.getItem('theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            document.getElementById('dark-toggle').checked = next === 'dark';
+        };
+
+        // ── Language toggle ──
+        window.handleLanguageToggle = function () {
+            const current = localStorage.getItem('lang') || 'en';
+            const next = current === 'ar' ? 'en' : 'ar';
+            applyLanguage(next);
+            document.getElementById('lang-display').textContent = next.toUpperCase();
+            // Update base.html lang label too
+            const baseLangLabel = document.getElementById('lang-label');
+            if (baseLangLabel) baseLangLabel.textContent = next === 'ar' ? 'EN' : 'AR';
+        };
+
+        // ── Logout ──
+        window.openLogoutConfirm = function () { document.getElementById('logout-modal').classList.add('open'); };
+        window.closeLogoutConfirm = function () { document.getElementById('logout-modal').classList.remove('open'); };
+        window.handleLogout = function () { Auth.logout(); };
+
+    })();
+</script>
+{% endblock %}

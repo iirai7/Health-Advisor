@@ -1,0 +1,5 @@
+# Ignore environment files
+.env
+
+# Ignore SQL files
+diagnosis.sql

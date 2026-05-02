@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="app.name">{% block title %}Health Advisor{% endblock %}</title>
+
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <script>
+        // Tailwind config with design tokens
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7F5E98',
+                        secondary: '#94A3B8',
+                        background: '#F7F6F7',
+                        emergency: '#EF4444',
+                        darkbg: '#0F0A15',
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ── Base ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #F7F6F7;
+            color: #1E293B;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            /* space for bottom nav */
+        }
+
+        /* ── Dark mode base ── */
+        html.dark body {
+            background-color: #0F0A15;
+            color: #FFFFFF;
+        }
+
+        /* ── Dark glow orbs ── */
+        .dark-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        html.dark .dark-glow {
+            opacity: 1;
+        }
+
+        /* ── Glass card ── */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(127, 94, 152, 0.1);
+            backdrop-filter: blur(12px);
+            transition: background 0.5s ease, border 0.5s ease;
+        }
+
+        html.dark .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ── Top bar ── */
+        #top-bar {
+            background: rgba(247, 246, 247, 0.85);
+            border-bottom: 1px solid rgba(127, 94, 152, 0.12);
+            backdrop-filter: blur(16px);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+
+        html.dark #top-bar {
+            background: rgba(15, 10, 21, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Bottom nav ── */
+        #bottom-nav {
+            background: rgba(247, 246, 247, 0.92);
+            border-top: 1px solid rgba(127, 94, 152, 0.12);
+            backdrop-filter: blur(20px);
+            transition: background 0.5s ease;
+        }
+
+        html.dark #bottom-nav {
+            background: rgba(15, 10, 21, 0.92);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Nav item ── */
+        .nav-item {
+            color: #94A3B8;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            color: #7F5E98;
+            transform: translateY(-2px);
+        }
+
+        /* ── Toggle buttons ── */
+        .toggle-btn {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid rgba(127, 94, 152, 0.25);
+            background: transparent;
+            color: #7F5E98;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(127, 94, 152, 0.1);
+        }
+
+        /* ── Emergency banner ── */
+        #emergency-banner {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: #EF4444;
+            color: #fff;
+            text-align: center;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            animation: pulse-bg 1.5s infinite;
+        }
+
+        @keyframes pulse-bg {
+
+            0%,
+            100% {
+                background: #EF4444;
+            }
+
+            50% {
+                background: #b91c1c;
+            }
+        }
+
+        /* ── Smooth page transitions ── */
+        main {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── RTL support ── */
+        html[dir="rtl"] .rtl-flip {
+            transform: scaleX(-1);
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(127, 94, 152, 0.3);
+            border-radius: 4px;
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body
+    class="{% if page in ['login','register','welcome','verify_otp','forgot_password','reset_password'] %}page-auth{% endif %}"
+    data-page="{{ page }}">
+
+    <!-- ══════════════════════════════════════════
+       DARK MODE GLOW ORBS (hidden in light mode)
+  ══════════════════════════════════════════ -->
+    <div class="dark-glow w-96 h-96 bg-purple-700/20 top-[-80px] left-[-80px]"></div>
+    <div class="dark-glow w-72 h-72 bg-primary/15 bottom-32 right-[-40px]"></div>
+
+    <!-- ══════════════════════════════════════════
+       EMERGENCY BANNER
+  ══════════════════════════════════════════ -->
+    <div id="emergency-banner">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+        <span id="emergency-text">🚨 Emergency — Call 997 immediately!</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       TOP BAR
+  ══════════════════════════════════════════ -->
+    <header id="top-bar" class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4">
+
+        <!-- Logo -->
+        <a href="/dashboard" class="flex items-center gap-2 no-underline">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center"
+                style="background:linear-gradient(135deg,#7F5E98,#a78cc4)">
+                <i class="fa-solid fa-stethoscope text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-base text-primary hidden sm:block" data-i18n="app.name">Health Advisor</span>
+
+        </a>
+
+        <!-- Right Controls -->
+        <div class="flex items-center gap-2">
+
+            <!-- Language Toggle -->
+            <button id="lang-toggle" class="toggle-btn" onclick="toggleLanguage()" aria-label="Toggle language">
+                <span id="lang-label">AR</span>
+            </button>
+
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+            </button>
+
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+       MAIN CONTENT (with top padding for fixed bar)
+  ══════════════════════════════════════════ -->
+    <main class="relative z-10 pt-16">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ══════════════════════════════════════════
+       BOTTOM NAVIGATION
+  ══════════════════════════════════════════ -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 h-20 flex items-center justify-around px-2">
+
+        <a href="/dashboard" class="nav-item flex flex-col items-center gap-1 text-xs font-medium no-underline
+       {% if page == 'dashboard' %}active{% endif %}" data-page="dashboard">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span data-i18n="nav.home">Home</span>
+        </a>
+
+        <a href="/family" class="nav-item flex flex-col items-center gap-1 text-xs font-medium no-underline
+       {% if page == 'family' %}active{% endif %}" data-page="family">
+            <i class="fa-solid fa-users text-xl"></i>
+            <span data-i18n="nav.family">Family</span>
+        </a>
+
+        <!-- Center FAB: Start Diagnosis -->
+        <a href="/chatbot" class="flex flex-col items-center gap-1 no-underline -mt-6">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg
+                  transition-transform duration-200 hover:scale-105 active:scale-95"
+                style="background:linear-gradient(135deg,#7F5E98,#a78cc4)">
+                <i class="fa-solid fa-comment-medical text-white text-xl"></i>
+            </div>
+            <span class="text-xs font-medium" style="color:#7F5E98" data-i18n="nav.diagnose">Diagnose</span>
+        </a>
+
+        <a href="/history" class="nav-item flex flex-col items-center gap-1 text-xs font-medium no-underline
+       {% if page == 'history' %}active{% endif %}" data-page="history">
+            <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+            <span data-i18n="nav.records">Records</span>
+        </a>
+
+        <a href="/settings" class="nav-item flex flex-col items-center gap-1 text-xs font-medium no-underline
+       {% if page == 'settings' %}active{% endif %}" data-page="settings">
+            <i class="fa-solid fa-gear text-xl"></i>
+            <span data-i18n="nav.settings">Settings</span>
+        </a>
+
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+       CORE SCRIPTS
+  ══════════════════════════════════════════ -->
+
+    <!-- api.js: central fetch wrapper -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+
+    <!-- translation.js: AR/EN i18n helper -->
+    <script src="{{ url_for('static', filename='js/translation.js') }}"></script>
+
+    <!-- auth.js: user authentication logic -->
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+    <!-- chatbot.js: chatbot logic -->
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+
+    <!-- family.js: family logic -->
+    <script src="{{ url_for('static', filename='js/family.js') }}"></script>
+
+
+    <script>
+            // ─────────────────────────────────────────
+            // THEME (dark / light)
+            // ─────────────────────────────────────────
+            (function initTheme() {
+                const saved = localStorage.getItem('theme') || 'light';
+                applyTheme(saved);
+            })();
+
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'dark') {
+                html.classList.add('dark');
+                if (icon) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); }
+            } else {
+                html.classList.remove('dark');
+                if (icon) { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); }
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const current = localStorage.getItem('theme') || 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        // ─────────────────────────────────────────
+        // LANGUAGE (ar / en)
+        // ─────────────────────────────────────────
+        (function initLang() {
+            const saved = localStorage.getItem('lang') || 'en';
+            applyLanguage(saved);
+        })();
+
+        function applyLanguage(lang) {
+            const html = document.documentElement;
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            const label = document.getElementById('lang-label');
+            if (label) label.textContent = lang === 'ar' ? 'EN' : 'AR';
+            localStorage.setItem('lang', lang);
+            // translation.js picks this up and re-renders all data-i18n elements
+            if (typeof applyTranslations === 'function') applyTranslations(lang);
+        }
+
+        function toggleLanguage() {
+            const current = localStorage.getItem('lang') || 'en';
+            applyLanguage(current === 'ar' ? 'en' : 'ar');
+        }
+
+        // ─────────────────────────────────────────
+        // EMERGENCY BANNER
+        // ─────────────────────────────────────────
+        function showEmergency(message) {
+            const banner = document.getElementById('emergency-banner');
+            const text = document.getElementById('emergency-text');
+            if (banner) {
+                if (message) text.textContent = message;
+                banner.style.display = 'block';
+                // Auto-scroll to top so user sees it
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function hideEmergency() {
+            const banner = document.getElementById('emergency-banner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        // ─────────────────────────────────────────
+        // AUTH GUARD (client-side)
+        // ─────────────────────────────────────────
+        const PROTECTED_PAGES = ['dashboard', 'chatbot', 'family', 'history', 'profile', 'settings'];
+        const currentPage = document.body.dataset.page || '';
+
+        (function authGuard() {
+            const token = localStorage.getItem('token');
+            if (PROTECTED_PAGES.includes(currentPage) && !token) {
+                window.location.href = '/login';
+            }
+        })();
+
+        // ─────────────────────────────────────────
+        // ACTIVE NAV HIGHLIGHT (redundant safety)
+        // ─────────────────────────────────────────
+        document.querySelectorAll('.nav-item[data-page]').forEach(el => {
+            if (el.dataset.page === currentPage) el.classList.add('active');
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+
+</html>

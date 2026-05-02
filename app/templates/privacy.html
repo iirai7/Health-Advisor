@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Health Advisor — Privacy Policy{% endblock %}
+
+{% block head %}
+<style>
+    .static-wrap {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 24px;
+        position: relative;
+    }
+    .content-card {
+        padding: 40px;
+        text-align: left;
+        position: relative;
+        z-index: 10;
+    }
+    html[dir="rtl"] .content-card {
+        text-align: right;
+    }
+    .section-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--color-primary);
+        margin-bottom: 16px;
+        margin-top: 32px;
+    }
+    .section-title:first-child {
+        margin-top: 0;
+    }
+    .text-p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--color-body);
+        margin-bottom: 16px;
+    }
+    .page-copyright {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 11px;
+        color: var(--color-placeholder);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="static-wrap anim-fade-up">
+    <!-- Background blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="card content-card anim-card-in">
+        <h1 class="card-title" style="margin-bottom: 24px; font-size: 32px;" data-i18n="privacy.title">Privacy Policy</h1>
+        
+        <div class="section-title" data-i18n="privacy.section1_title">1. Introduction</div>
+        <p class="text-p" data-i18n="privacy.section1_text">
+            Welcome to Health Advisor. We are committed to protecting your personal information and your right to privacy. 
+        </p>
+
+        <div class="section-title" data-i18n="privacy.section2_title">2. Information We Collect</div>
+        <p class="text-p" data-i18n="privacy.section2_text">
+            We collect personal information that you provide to us such as name, email address, and medical history.
+        </p>
+
+        <div class="section-title" data-i18n="privacy.section3_title">3. How We Use Your Information</div>
+        <p class="text-p" data-i18n="privacy.section3_text">
+            We use the information we collect or receive to facilitate account creation, provide medical insights, and manage family profiles.
+        </p>
+
+        <div class="section-title" data-i18n="privacy.section4_title">4. Data Security</div>
+        <p class="text-p" data-i18n="privacy.section4_text">
+            We implement a variety of security measures to maintain the safety of your personal information.
+        </p>
+
+        <div class="section-title" data-i18n="privacy.section5_title">5. Policy Updates</div>
+        <p class="text-p" data-i18n="privacy.section5_text">
+            We may update this privacy policy from time to time.
+        </p>
+    </div>
+
+    <p class="page-copyright" data-i18n="auth.copyright">© 2026 Health Advisor System</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
