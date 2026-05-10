@@ -383,12 +383,21 @@
 
     <!-- Start Diagnosis CTA -->
     <div class="anim-fade-up delay-3">
-        <a href="/chatbot" id="cta-card" class="cta-card" style="display:block;text-decoration:none">
+        <a href="/chatbot" id="cta-card" class="cta-card" style="display:block;text-decoration:none; margin-bottom: 12px;">
             <div class="cta-deco"></div>
             <div class="cta-deco-2"></div>
             <div class="cta-icon"><i class="fa-solid fa-stethoscope"></i></div>
             <p class="cta-title" data-i18n="dashboard.new_diagnosis">Start New Diagnosis</p>
             <p class="cta-sub" id="cta-sub">for <span id="cta-member-name">yourself</span></p>
+            <i class="fa-solid fa-arrow-right cta-arrow"></i>
+        </a>
+
+        <!-- Voice Assistant Card -->
+        <a href="/voice" class="cta-card voice-card" style="display:block;text-decoration:none; background: linear-gradient(135deg, #4F46E5, #7C3AED); margin-top: 12px;">
+            <div class="cta-deco"></div>
+            <div class="cta-icon"><i class="fa-solid fa-microphone"></i></div>
+            <p class="cta-title" data-i18n="dashboard.voice_diagnosis">Voice Assistant Mode</p>
+            <p class="cta-sub" data-i18n="dashboard.voice_sub">Use voice to describe symptoms</p>
             <i class="fa-solid fa-arrow-right cta-arrow"></i>
         </a>
     </div>

@@ -14,7 +14,16 @@ class Database:
     def get_connection(cls):
         """Get database connection — reconnects if dropped"""
         try:
-            if cls._connection is None or not cls._connection.is_connected():
+            # Check if connection exists and is actually alive
+            if cls._connection:
+                try:
+                    # ping(reconnect=True) actively tests the connection and
+                    # automatically reconnects if the server timed it out.
+                    cls._connection.ping(reconnect=True, attempts=3, delay=1)
+                except Error:
+                    cls._connection = None
+
+            if cls._connection is None:
                 cls._connection = mysql.connector.connect(
                     host=Config.DB_HOST,
                     user=Config.DB_USER,

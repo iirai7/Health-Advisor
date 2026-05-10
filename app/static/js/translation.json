@@ -75,6 +75,8 @@
             "all": "All",
             "critical_cases": "Critical Cases",
             "new_diagnosis": "Start New Diagnosis",
+            "voice_diagnosis": "Voice Assistant Mode",
+            "voice_sub": "Use voice to describe symptoms",
             "history_section": "Medical History",
             "view_record": "View Record",
             "no_records": "No diagnosis records yet",
@@ -194,6 +196,14 @@
             "developer": "Developed by Smart Systems Team",
             "mission_title": "Our Mission",
             "mission_text": "To bridge the gap between users and medical information using advanced AI, providing reliable preliminary guidance for better health management."
+        },
+        "voice": {
+            "title": "Voice Assistant",
+            "status_online": "Online",
+            "tap_to_start": "Tap the mic to start",
+            "listening": "Listening...",
+            "thinking": "Thinking...",
+            "error": "Could not hear. Try again."
         }
     },
     "ar": {
@@ -272,6 +282,8 @@
             "all": "الكل",
             "critical_cases": "حالات حرجة",
             "new_diagnosis": "ابدأ تشخيصاً جديداً",
+            "voice_diagnosis": "وضع المساعد الصوتي",
+            "voice_sub": "استخدم صوتك لوصف الأعراض",
             "history_section": "السجلات الطبية",
             "view_record": "عرض السجل",
             "no_records": "لا توجد سجلات تشخيص بعد",
@@ -339,18 +351,20 @@
         },
         "settings": {
             "title": "الإعدادات",
-            "subtitle": "تخصيص تجربتك في التطبيق",
-            "profile_section": "الملف الشخصي",
-            "preferences_section": "التفضيلات",
-            "dark_mode": "الوضع الليلي",
-            "language": "اللغة",
-            "system_section": "النظام",
-            "privacy": "الخصوصية والأمان",
+            "profile": "الملف الشخصي",
+            "notifications": "الإشعارات",
+            "security": "الأمان والخصوصية",
+            "help": "المساعدة والدعم",
             "about": "حول التطبيق",
-            "logout": "تسجيل الخروج",
-            "delete_account": "حذف الحساب",
-            "confirm_logout": "هل أنت متأكد من تسجيل الخروج؟",
-            "confirm_delete": "هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء."
+            "logout": "تسجيل الخروج"
+        },
+        "voice": {
+            "title": "المساعد الصوتي",
+            "status_online": "متصل",
+            "tap_to_start": "اضغط على الميكروفون للبدء",
+            "listening": "جارٍ الاستماع...",
+            "thinking": "جارٍ التفكير...",
+            "error": "تعذّر الاستماع. حاول مرة أخرى."
         },
         "errors": {
             "401_title": "غير مصرح",
@@ -391,6 +405,14 @@
             "developer": "تم التطوير بواسطة فريق الأنظمة الذكية",
             "mission_title": "مهمتنا",
             "mission_text": "سد الفجوة بين المستخدمين والمعلومات الطبية باستخدام الذكاء الاصطناعي المتقدم، وتقديم توجيه أولي موثوق لإدارة أفضل للصحة."
+        },
+        "voice": {
+            "title": "المساعد الصوتي",
+            "status_online": "متصل",
+            "tap_to_start": "اضغط على الميكروفون للبدء",
+            "listening": "جارٍ الاستماع...",
+            "thinking": "جارٍ التفكير...",
+            "error": "تعذّر الاستماع. حاول مرة أخرى."
         }
     }
 }

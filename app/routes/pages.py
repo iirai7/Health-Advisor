@@ -134,6 +134,13 @@ def about():
     return render_template('about.html', page='about')
 
 
+@pages_bp.route('/voice', methods=['GET'])
+def voice():
+    """Voice Input Page"""
+    logger.info("Rendering voice page")
+    return render_template('voice.html', page='voice')
+
+
 # ============================================================
 # ERROR PAGES
 # ============================================================

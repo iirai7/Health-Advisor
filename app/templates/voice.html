@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Assistant - Health Advisor{% endblock %}
+
+{% block head %}
+<style>
+    /* ── Reuse existing Chatbot Styles ── */
+    body { padding-bottom: 0; }
+    
+    #bottom-nav { transform: translateY(100%); }
+    #bottom-nav.nav-visible { transform: translateY(0); }
+
+    .voice-page {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 64px);
+        max-width: 680px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* ── Messages area (same as chatbot) ── */
+    .messages-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        min-height: 0;
+    }
+
+    /* ── Message bubble extensions ── */
+    .msg-bubble {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        animation: bubbleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .msg-bubble.user { flex-direction: row-reverse !important; }
+    .msg-bubble.assistant { flex-direction: row !important; }
+
+    .msg-avatar {
+        width: 32px; height: 32px; border-radius: 10px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; color: #fff; flex-shrink: 0;
+    }
+
+    .msg-text {
+        padding: 11px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5;
+        font-family: 'Tajawal', sans-serif;
+    }
+
+    .msg-bubble.assistant .msg-text {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        color: var(--color-heading); border-bottom-left-radius: 6px;
+        position: relative;
+    }
+
+    .msg-bubble.user .msg-text {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        color: #fff; border-bottom-right-radius: 6px;
+    }
+
+    /* ── Play Button inside bubble ── */
+    .play-btn {
+        margin-left: 8px;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        font-size: 12px;
+    }
+    .play-btn:hover { opacity: 1; }
+    [dir="rtl"] .play-btn { margin-left: 0; margin-right: 8px; }
+
+    /* ── Voice Bottom Bar ── */
+    .voice-footer {
+        padding: 24px 16px 40px;
+        background: var(--color-bg);
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .mic-container {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mic-btn {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 2;
+        box-shadow: 0 8px 24px rgba(127, 94, 152, 0.35);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .mic-btn:active {
+        transform: scale(0.95);
+    }
+
+    .mic-btn.listening {
+        background: var(--color-danger);
+        animation: pulseDanger 1.5s infinite;
+    }
+
+    @keyframes pulseDanger {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .voice-status {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-muted);
+        min-height: 20px;
+    }
+
+    .transcript-preview {
+        font-size: 13px;
+        color: var(--color-primary);
+        font-style: italic;
+        max-width: 80%;
+        text-align: center;
+        min-height: 20px;
+    }
+
+    @keyframes bubbleIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voice-page">
+    <!-- Top Header (Back Button) -->
+    <div class="glass-header flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <button onclick="history.back()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-heading">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="text-center">
+            <h2 class="text-sm font-bold text-heading" data-i18n="voice.title">Voice Assistant</h2>
+            <p class="text-[10px] text-muted flex items-center justify-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                <span data-i18n="voice.status_online">Online</span>
+            </p>
+        </div>
+        <div class="w-10"></div> <!-- Spacer -->
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-area" id="voice-messages">
+        <!-- Initial Assistant Message will be injected here -->
+    </div>
+
+    <!-- Voice Footer -->
+    <div class="voice-footer">
+        <div class="transcript-preview" id="transcript-text"></div>
+        <div class="voice-status" id="voice-status" data-i18n="voice.tap_to_start">Tap the mic to start</div>
+        
+        <div class="mic-container">
+            <button class="mic-btn" id="mic-btn">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+{% endblock %}
